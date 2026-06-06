@@ -2,26 +2,25 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; color: var(--t); }
 
 body { 
-    background: #fef5f5; /* Fundo idêntico à cor do seu convite para fusão perfeita */
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    min-height: 100vh; 
-    padding: 12px; /* Margem sutil nas bordas para respirar em telas menores */
+    background: #fef5f5; 
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
 }
 
-/* Container responsivo que mantém a proporção exata da imagem */
+/* Container do Convite centralizado horizontalmente de forma segura */
 .invite-container {
     position: relative; 
     width: 100%; 
-    max-width: 440px; /* Evita que o convite fique gigante em telas grandes */
-    aspect-ratio: 1000 / 1500; /* Mantém a proporção exata 2:3 do convite sem distorcer */
+    max-width: 440px; /* Tamanho perfeito de celular */
+    aspect-ratio: 1000 / 1500; 
     background: url('convite.jpg') center center / 100% 100% no-repeat;
-    border-radius: 16px; /* Cantos suavemente arredondados como um app moderno */
-    box-shadow: 0 10px 30px rgba(139, 94, 102, 0.1); /* Sombra elegante */
+    border-radius: 16px; 
+    box-shadow: 0 10px 30px rgba(139, 94, 102, 0.1); 
+    margin: 10px auto; /* Centraliza no computador e celular sem conflito de flexbox */
 }
 
-/* Área dos botões interativos (Sempre alinhados perfeitamente sobre a imagem) */
 .overlay { 
     position: absolute; 
     top: 62.5%; 
@@ -60,28 +59,29 @@ body {
     z-index: 99; 
 }
 
-/* Modais responsivos e centralizados */
+/* Telas sobrepostas (Modais) ocupando a tela cheia real */
 .modal { 
     display: none; 
     position: fixed; 
     z-index: 1000; 
     left: 0; 
     top: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(92,68,72,0.6); 
+    width: 100vw; 
+    height: 100vh; 
+    background: rgba(92, 68, 72, 0.6); 
     backdrop-filter: blur(4px); 
     justify-content: center; 
     align-items: center; 
     padding: 15px; 
 }
 
+/* Caixa interna do modal - Agora com largura responsiva em porcentagem */
 .mod-content { 
     background: var(--p); 
     border-radius: 20px; 
-    width: 100%; 
+    width: 92%; /* Garante bom aproveitamento de tela em celulares estreitos */
     max-width: 380px; 
-    padding: 25px; 
+    padding: 20px 18px; 
     position: relative; 
     border: 4px solid var(--w); 
     animation: up 0.3s ease; 
@@ -151,10 +151,11 @@ form {
 }
 
 .form-group label { 
-    font-size: 0.65rem; 
-    font-weight: 600; 
+    font-size: 0.62rem; 
+    font-weight: 700; 
     color: var(--d); 
     text-transform: uppercase; 
+    letter-spacing: 0.3px;
 }
 
 input { 
@@ -229,29 +230,33 @@ li:last-child {
     border-bottom: none; 
 }
 
-.btn-reserve { 
+/* Evita que o botão "Reservar" seja amassado na horizontal */
+.btn-reserve, .btn-res-status { 
     background: var(--p); 
     border: 1px solid var(--r); 
     color: var(--r); 
-    padding: 5px 10px; 
+    padding: 6px 12px; 
     border-radius: 6px; 
     cursor: pointer; 
-    font-size: 0.7rem; 
+    font-size: 0.72rem; 
     font-weight: 600; 
+    flex-shrink: 0; /* Impede o botão de esmagar */
+    margin-left: 10px;
 }
 
 .btn-res-status { 
     background: #eaeaea; 
     color: #777; 
-    padding: 5px 10px; 
+    padding: 6px 12px; 
     border-radius: 6px; 
-    font-size: 0.7rem; 
+    font-size: 0.72rem; 
 }
 
 .qty-badge { 
     font-weight: bold; 
     color: var(--d); 
-    margin-left: 8px; 
+    margin-left: 4px; 
+    white-space: nowrap;
 }
 
 .tabs { 
@@ -276,6 +281,7 @@ li:last-child {
     color: var(--w); 
 }
 
+/* Grid Administrativo Otimizado */
 .summary { 
     display: grid; 
     grid-template-columns: repeat(4, 1fr); 
@@ -283,21 +289,24 @@ li:last-child {
     background: var(--w); 
     border: 1px solid var(--b); 
     border-radius: 10px; 
-    padding: 10px; 
+    padding: 8px 4px; 
     margin-bottom: 15px; 
     text-align: center; 
 }
 
 .summary span { 
-    font-size: 1.1rem; 
+    font-size: 1.15rem; 
     font-weight: 700; 
     color: var(--d); 
 }
 
 .summary small { 
-    font-size: 0.55rem; 
+    font-size: 0.52rem; 
     color: #888; 
     text-transform: uppercase; 
+    font-weight: 600;
+    display: block;
+    white-space: nowrap; /* Evita que "Crianças" ou "Ausentes" quebrem linha */
 }
 
 .highlight { 
