@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chá da Maria Helena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button class="admin-btn" onclick="openAdmin()" aria-label="Admin"><i class="fa-solid fa-lock"></i></button>
+    <div class="invite-container">
+        <div class="overlay">
+            <button class="hotspot" onclick="openMod('confirm-mod')"></button>
+            <button class="hotspot" onclick="openMod('addr-mod')"></button>
+            <button class="hotspot" onclick="openMod('gifts-mod')"></button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR PRESENÇA -->
+    <div id="confirm-mod" class="modal">
+        <div class="mod-content">
+            <span class="close" onclick="closeMod('confirm-mod')">&times;</span>
+            <h3>Confirmar Presença</h3>
+            <form id="presence-form" onsubmit="event.preventDefault();">
+                <input type="text" id="g-name" placeholder="Seu nome completo" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Acompanhantes Adultos</label>
+                        <input type="number" id="g-adults" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Crianças</label>
+                        <input type="number" id="g-kids" min="0" value="0">
+                    </div>
+                </div>
+                <div class="confirm-buttons">
+                    <button type="button" class="btn btn-going" onclick="submitPresence(true)">Vou comparecer! 😍</button>
+                    <button type="button" class="btn btn-not-going" onclick="submitPresence(false)">Não poderei ir... 😢</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ENDEREÇO -->
+    <div id="addr-mod" class="modal">
+        <div class="mod-content">
+            <span class="close" onclick="closeMod('addr-mod')">&times;</span>
+            <h3>Localização</h3>
+            <p><strong>Igreja Assembleia de Deus</strong><br>Av. Salomé, 784</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Av+Salomé+784+Igreja+Assembleia+de+Deus" target="_blank" class="btn">Maps</a>
+        </div>
+    </div>
+
+    <!-- MODAL LISTA PRESENTES -->
+    <div id="gifts-mod" class="modal">
+        <div class="mod-content large">
+            <span class="close" onclick="closeMod('gifts-mod')">&times;</span>
+            <h2 class="gift-title">LISTA DE PRESENTES</h2>
+            <h3 class="gift-sub">Fralda M ou G + Mimo</h3>
+            <p class="gift-desc">Sua presença é o nosso maior presente! Se quiser mimar nossa princesa, sugerimos fralda M ou G e, se desejar, um mimo da nossa lista.</p>
+            <div class="list-wrapper"><ul id="g-list"></ul></div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN (Painel da Mamãe) -->
+    <div id="admin-mod" class="modal">
+        <div class="mod-content large">
+            <span class="close" onclick="closeMod('admin-mod')">&times;</span>
+            <h3>Painel da Mamãe</h3>
+            <div class="tabs">
+                <button class="tab-btn active" id="t-guests" onclick="switchTab('guests')">Confirmados</button>
+                <button class="tab-btn" id="t-manage" onclick="switchTab('manage')">Mimos</button>
+                <button class="tab-btn" id="t-opts" onclick="switchTab('opts')">Opções</button>
+            </div>
+            
+            <div id="c-guests" class="tab-content">
+                <div class="summary">
+                    <div><span id="sum-a">0</span><br><small>Adultos</small></div>
+                    <div><span id="sum-k">0</span><br><small>Crianças</small></div>
+                    <div class="highlight"><span id="sum-t">0</span><br><small>Vão</small></div>
+                    <div class="decline-card"><span id="sum-d">0</span><br><small>Ausentes 😢</small></div>
+                </div>
+                <ul id="guests-ul" class="admin-list"></ul>
+            </div>
+            
+            <div id="c-manage" class="tab-content hidden">
+                <form onsubmit="addMimo(event)" class="add-form">
+                    <input type="text" id="new-mimo" placeholder="Novo mimo..." style="flex:2" required>
+                    <input type="number" id="new-qty" placeholder="Qtd" min="1" value="1" style="flex:1" required>
+                    <button type="submit" class="btn-add">Adicionar</button>
+                </form>
+                <ul id="mimos-ul" class="admin-list"></ul>
+            </div>
+            
+            <div id="c-opts" class="tab-content hidden">
+                <button onclick="logout()" class="btn-sec">Sair</button>
+                <button onclick="clearAll()" class="btn-danger">Limpar Tudo</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
