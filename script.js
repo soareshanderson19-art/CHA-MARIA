@@ -216,25 +216,33 @@ function renderDashboard(list) {
     list.forEach((g, idx) => {
         const li = document.createElement("li");
         const isAttending = g.attending !== false;
+        let detailsHTML = "";
 
         if (isAttending) {
             aTotal += 1 + g.extraA;
             kTotal += g.kids;
-            li.innerHTML = `
+            detailsHTML = `
                 <div>
                     <strong>${g.name}</strong><br>
                     <small style="color:#16a34a; font-weight:600;">✔ Confirmou (+${g.extraA} ad. e ${g.kids} kid(s))</small>
                 </div>`;
         } else {
             dTotal += 1;
-            li.innerHTML = `
+            detailsHTML = `
                 <div>
                     <strong>${g.name}</strong><br>
                     <small style="color:#dc2626; font-weight:600;">❌ Não poderá ir 😢</small>
                 </div>`;
         }
         
-        li.innerHTML += `<button onclick="delGuest(${idx})" class="btn-del"><i class="fa-solid fa-trash"></i></button>`;
+        // Incluído botão de Editar junto ao de lixeira
+        li.innerHTML = `
+            ${detailsHTML}
+            <div class="actions">
+                <button onclick="editGuest(${idx})" class="btn-edt" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="delGuest(${idx})" class="btn-del" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        `;
         ul.appendChild(li);
     });
 
@@ -242,6 +250,60 @@ function renderDashboard(list) {
     document.getElementById("sum-k").textContent = kTotal;
     document.getElementById("sum-t").textContent = aTotal + kTotal;
     document.getElementById("sum-d").textContent = dTotal;
+}
+
+// Função para Editar um Convidado Confirmado
+function editGuest(idx) {
+    getGuestsPromise().then(list => {
+        const g = list[idx];
+        if (!g) return;
+
+        // 1. Edição do Nome
+        const name = prompt("Editar nome completo:", g.name);
+        if (name === null) return; // Se cancelar a operação geral
+
+        // 2. Edição do Status de Presença
+        let isAttending = g.attending !== false;
+        const attendingPrompt = prompt("A pessoa vai comparecer? (Digite S para Sim ou N para Não):", isAttending ? "S" : "N");
+        if (attendingPrompt !== null) {
+            const ans = attendingPrompt.trim().toUpperCase();
+            isAttending = (ans === "S" || ans === "SIM");
+        }
+
+        let extraA = g.extraA || 0;
+        let kids = g.kids || 0;
+
+        // Se comparecer, pergunta a quantidade de acompanhantes
+        if (isAttending) {
+            const adultsPrompt = prompt("Quantidade de adultos acompanhantes (além de quem confirmou):", g.extraA || 0);
+            if (adultsPrompt !== null) {
+                extraA = parseInt(adultsPrompt) || 0;
+            }
+
+            const kidsPrompt = prompt("Quantidade de crianças acompanhantes:", g.kids || 0);
+            if (kidsPrompt !== null) {
+                kids = parseInt(kidsPrompt) || 0;
+            }
+        } else {
+            // Se não for, reseta os acompanhantes
+            extraA = 0;
+            kids = 0;
+        }
+
+        // Salva a alteração no objeto
+        list[idx] = {
+            ...g,
+            name: name.trim() || g.name,
+            extraA: extraA,
+            kids: kids,
+            attending: isAttending
+        };
+
+        // Envia as alterações para o Firebase
+        set(ref(db, 'guests'), list).then(() => {
+            alert("Confirmação de presença editada com sucesso!");
+        });
+    });
 }
 
 // Atualização do Painel de Gerenciamento de Mimos
@@ -296,6 +358,7 @@ function editMimo(id) {
                 if (!isNaN(num) && num > 0) {
                     list[i].name = n.trim();
                     list[i].targetQty = num;
+                    if (!list[i].reservations) list[i].reservations = [];
                     set(ref(db, 'gifts'), list);
                 }
             }
@@ -395,6 +458,7 @@ window.submitPresence = submitPresence;
 window.reserveMimo = reserveMimo;
 window.openAdmin = openAdmin;
 window.delGuest = delGuest;
+window.editGuest = editGuest; // Função de edição exposta globalmente
 window.editMimo = editMimo;
 window.delMimo = delMimo;
 window.releaseMimoSlot = releaseMimoSlot;
